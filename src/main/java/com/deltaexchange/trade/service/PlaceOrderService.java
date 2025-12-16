@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.deltaexchange.trade.config.DeltaConfig;
+import com.deltaexchange.trade.service.SetLeverageService.ApiException;
 import com.deltaexchange.trade.util.DeltaSignatureUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,8 +36,7 @@ public class PlaceOrderService {
             String endpoint = "/v2/orders";
 
             // EXACT deterministic JSON (required for signature)
-            String bodyJson =
-                    "{\"product_id\":" + config.getProductId() +
+            String bodyJson = "{\"product_id\":" + config.getProductId() +
                     ",\"product_symbol\":\"" + config.getSymbol() + "\"" +
                     ",\"limit_price\":" + limitPrice +
                     ",\"size\":" + size +
@@ -64,15 +64,33 @@ public class PlaceOrderService {
                     .header("timestamp", String.valueOf(timestamp))
                     .header("Content-Type", "application/json")
                     .header("Accept", "application/json")
-                    .bodyValue(bodyJson)                         // RAW STRING BODY (important)
-                    .retrieve()
-                    .bodyToMono(String.class)
-                    .map(response -> {
+                    .bodyValue(bodyJson) // RAW STRING BODY (important)
+                    .exchangeToMono(response -> {
                         consoleLogger.info("Response of Order Service:::: {}", response);
-                        try {
-                            return mapper.readTree(response);
-                        } catch (Exception e) {
-                            throw new RuntimeException("Failed to parse Order Service response", e);
+                        if (response.statusCode().is2xxSuccessful()) {
+                            // success -> read body and convert to JsonNode
+                            return response.bodyToMono(String.class)
+                                    .map(body -> {
+                                        consoleLogger.info("Response of setOrderLeverage:::: {}", body);
+                                        try {
+                                            return mapper.readTree(body);
+                                        } catch (Exception e) {
+                                            throw new RuntimeException("Failed to parse setOrderLeverage response", e);
+                                        }
+                                    });
+                        } else {
+                            // error -> read full error body and throw a custom exception containing it
+                            return response.bodyToMono(String.class)
+                                    .defaultIfEmpty("") // defensive: server might return empty body
+                                    .flatMap(errorBody -> {
+                                        int statusCode = response.rawStatusCode();
+                                        consoleLogger.error("PlaceOrder API failed. status={} body={}", statusCode,
+                                                errorBody);
+                                        errorLogger.error("Place Order API failed. status={} body={}", statusCode,
+                                                errorBody);
+                                        // Throw exception with exact status + body
+                                        return Mono.error(new ApiException(statusCode, errorBody));
+                                    });
                         }
                     });
 

@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.deltaexchange.trade.config.DeltaDto;
 
+import reactor.core.publisher.Mono;
+
 @Service
 public class CheckAndOrderService {
 
@@ -32,46 +34,59 @@ public class CheckAndOrderService {
 		try {
 			// Cancels All Orders
 			if (Math.abs(size) == 1) {
-				cancelAllOrders.cancelOrdersForProductAsJson().subscribe(cancelOrdersNode -> {
-					consoleLogger.info("cancelOrdersNode:::::{}", cancelOrdersNode);
 
-					JSONObject cancelOrdersResponse = new JSONObject(cancelOrdersNode.toString());
-					boolean apiSuccess = cancelOrdersResponse.getBoolean("success");
+				int leverage = returnLeverage(size);
 
-					if (!apiSuccess) {
-						consoleLogger.info(":::::::::Cancel Order service returned success false::::::::::::");
-					} else {
-						transactionLogger.info("Cancelled All Previous Orders for EntryPrice->{}, Size->{}:::::",
-								entryPrice, size);
-					}
-				});
-			
-			// Set Leverage of Orders
-			int leverage = returnLeverage(size);
-			setOrderLeverage.setOrderLeverage(leverage).subscribe(setLeverageNode -> {
-				JSONObject setLeverageResponse = new JSONObject(setLeverageNode.toString());
-				boolean apiSuccesslev = setLeverageResponse.getBoolean("success");
+				cancelAllOrders.cancelOrdersForProductAsJson()
+						.flatMap(cancelOrdersNode -> {
 
-				if (!apiSuccesslev) {
-					consoleLogger.info(":::::::::Set Leverage Service returned success false::::::::::::");
-				} else {
-					transactionLogger.info(
-							"Leverage Set Successfully Orders for EntryPrice->{}, Size->{}, Leverage->{}:::::",
-							entryPrice, size, leverage);
+							consoleLogger.info("cancelOrdersNode:::::{}", cancelOrdersNode);
 
-					// Place Orders
-					placeOrder(entryPrice, size);
-				}
-			});
-		}
-				// Added to edit orders
-					int abs = Math.abs(size);
-					if (abs >= 2) {
-						editOrders.editOrdersForLotSize(size).subscribe();	
-					}
-					deltaDto.setLastOrderSize(size);
-				
-		
+							JSONObject cancelOrdersResponse = new JSONObject(cancelOrdersNode.toString());
+							boolean apiSuccess = cancelOrdersResponse.getBoolean("success");
+
+							if (!apiSuccess) {
+								consoleLogger.info(":::::::::Cancel Order service returned success false::::::::::::");
+								return Mono.empty(); // stop further execution
+							}
+
+							transactionLogger.info(
+									"Cancelled All Previous Orders for EntryPrice->{}, Size->{}:::::",
+									entryPrice, size);
+
+							// ✅ After cancel success → set leverage
+							return setOrderLeverage.setOrderLeverage(leverage);
+						})
+						.flatMap(setLeverageNode -> {
+
+							JSONObject setLeverageResponse = new JSONObject(setLeverageNode.toString());
+							boolean apiSuccessLev = setLeverageResponse.getBoolean("success");
+
+							if (!apiSuccessLev) {
+								consoleLogger.info(":::::::::Set Leverage Service returned success false::::::::::::");
+								return Mono.empty(); // stop further execution
+							}
+
+							transactionLogger.info(
+									"Leverage Set Successfully Orders for EntryPrice->{}, Size->{}, Leverage->{}:::::",
+									entryPrice, size, leverage);
+
+							// ✅ After leverage success → place order
+							placeOrder(entryPrice, size);
+
+							return Mono.empty(); // end of chain
+						})
+						.subscribe(
+								null,
+								error -> consoleLogger.error("Error in cancelling all orders and place order flow",
+										error));
+			}
+			// Added to edit orders
+			int abs = Math.abs(size);
+			if (abs >= 2) {
+				editOrders.editOrdersForLotSize(size).subscribe();
+			}
+			deltaDto.setLastOrderSize(size);
 
 		} catch (Exception e) {
 			errorLogger.error("Error occured in Check and Order Service:::::", e);
@@ -85,16 +100,16 @@ public class CheckAndOrderService {
 		int abs = Math.abs(size);
 
 		switch (abs) {
-		case 1:	
-		case 2:
-		case 6:
-			return 10;
+			case 1:
+			case 2:
+			case 6:
+				return 10;
 
-		case 18:
-			return 25;
+			case 12:
+				return 25;
 
-		default:
-			return 10;
+			default:
+				return 10;
 		}
 	}
 
@@ -105,32 +120,32 @@ public class CheckAndOrderService {
 
 		switch (size) {
 
-		case 1:
-			executeOrder(String.valueOf(entryPriceDouble + 500), 2, "sell");
-			executeOrder(String.valueOf(entryPriceDouble - 750), 1, "buy");
-			executeOrder(String.valueOf(entryPriceDouble - 1250), 4, "buy");
-			changeLevAndexecuteOrder(25,String.valueOf(entryPriceDouble - 1750), 6, "buy");
-			changeLevAndexecuteOrder(25,String.valueOf(entryPriceDouble - 2250), 24, "buy");
-			changeLevAndexecuteOrder(25,String.valueOf(entryPriceDouble - 2750), 36, "buy");
-			changeLevAndexecuteOrder(35,String.valueOf(entryPriceDouble - 3250), 144, "buy");
-			changeLevAndexecuteOrder(45,String.valueOf(entryPriceDouble - 3750), 216, "buy");
-			changeLevAndexecuteOrder(60,String.valueOf(entryPriceDouble - 4250), 864, "buy");
-			changeLevAndexecuteOrder(75,String.valueOf(entryPriceDouble - 4750), 1296, "buy");
+			case 1:
+				executeOrder(String.valueOf(entryPriceDouble + 500), 2, "sell");
+				executeOrder(String.valueOf(entryPriceDouble - 750), 1, "buy");
+				executeOrder(String.valueOf(entryPriceDouble - 1250), 4, "buy");
+				changeLevAndexecuteOrder(25, String.valueOf(entryPriceDouble - 1750), 6, "buy");
+				changeLevAndexecuteOrder(25, String.valueOf(entryPriceDouble - 2250), 24, "buy");
+				changeLevAndexecuteOrder(25, String.valueOf(entryPriceDouble - 2750), 36, "buy");
+				changeLevAndexecuteOrder(35, String.valueOf(entryPriceDouble - 3250), 144, "buy");
+				changeLevAndexecuteOrder(45, String.valueOf(entryPriceDouble - 3750), 216, "buy");
+				changeLevAndexecuteOrder(60, String.valueOf(entryPriceDouble - 4250), 864, "buy");
+				changeLevAndexecuteOrder(75, String.valueOf(entryPriceDouble - 4750), 1296, "buy");
 
-			break;	
-		
-		case -1:
-			executeOrder(String.valueOf(entryPriceDouble - 500), 2, "buy");
-			executeOrder(String.valueOf(entryPriceDouble + 750), 1, "sell");
-			executeOrder(String.valueOf(entryPriceDouble + 1250), 4, "sell");
-			changeLevAndexecuteOrder(25,String.valueOf(entryPriceDouble + 1750), 6, "sell");
-			changeLevAndexecuteOrder(25,String.valueOf(entryPriceDouble + 2250), 24, "sell");
-			changeLevAndexecuteOrder(25,String.valueOf(entryPriceDouble + 2750), 36, "sell");
-			changeLevAndexecuteOrder(35,String.valueOf(entryPriceDouble + 3250), 144, "sell");
-			changeLevAndexecuteOrder(45,String.valueOf(entryPriceDouble + 3750), 216, "sell");
-			changeLevAndexecuteOrder(60,String.valueOf(entryPriceDouble + 4250), 864, "sell");
-			changeLevAndexecuteOrder(75,String.valueOf(entryPriceDouble + 4750), 1296, "sell");
-			break;
+				break;
+
+			case -1:
+				executeOrder(String.valueOf(entryPriceDouble - 500), 2, "buy");
+				executeOrder(String.valueOf(entryPriceDouble + 750), 1, "sell");
+				executeOrder(String.valueOf(entryPriceDouble + 1250), 4, "sell");
+				changeLevAndexecuteOrder(25, String.valueOf(entryPriceDouble + 1750), 6, "sell");
+				changeLevAndexecuteOrder(25, String.valueOf(entryPriceDouble + 2250), 24, "sell");
+				changeLevAndexecuteOrder(25, String.valueOf(entryPriceDouble + 2750), 36, "sell");
+				changeLevAndexecuteOrder(35, String.valueOf(entryPriceDouble + 3250), 144, "sell");
+				changeLevAndexecuteOrder(45, String.valueOf(entryPriceDouble + 3750), 216, "sell");
+				changeLevAndexecuteOrder(60, String.valueOf(entryPriceDouble + 4250), 864, "sell");
+				changeLevAndexecuteOrder(75, String.valueOf(entryPriceDouble + 4750), 1296, "sell");
+				break;
 
 		}
 	}
@@ -159,7 +174,7 @@ public class CheckAndOrderService {
 		});
 	}
 
-	public void changeLevAndexecuteOrder(int leverage,String limitPrice, int size, String side) {
+	public void changeLevAndexecuteOrder(int leverage, String limitPrice, int size, String side) {
 
 		setOrderLeverage.setOrderLeverage(leverage).subscribe(setLeverageNode -> {
 			JSONObject setLeverageResponse = new JSONObject(setLeverageNode.toString());

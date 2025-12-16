@@ -1,0 +1,58 @@
+[16 Dec 2025 22:07:01,879 INFO  Console -WebClientService.java]- :::::::::::::::::::SSL is Loaded:::::::::::::
+[16 Dec 2025 22:07:02,862 INFO  Console -StartBot.java]- ::::::::::::::::Bot Started:::::::::::::
+[16 Dec 2025 22:07:09,042 INFO  Console -PositionService.java]- Response of PositionDetailsService:::::{"result":{"entry_price":"87625.00000000","size":-2},"success":true}
+[16 Dec 2025 22:07:09,060 INFO  Console -StartBot.java]- [BOT] Position data received for tick 0: {"result":{"entry_price":"87625.00000000","size":-2},"success":true}
+[16 Dec 2025 22:07:09,071 INFO  Console -StartBot.java]- LastOrderSize::::0 and CurentOrderSize:::::[-2]
+[16 Dec 2025 22:07:09,302 INFO  Console -EditOrdersService.java]- Open Orders Response: {"meta":{"after":null,"before":null,"limit":10,"total_count":1},"result":[{"product_symbol":"BTCUSD","order_type":"limit_order","bracket_trail_amount":null,"bracket_take_profit_limit_price":null,"cancellation_reason":null,"state":"open","user_id":24111461,"id":1086680911,"mmp":"disabled","bracket_take_profit_price":null,"limit_price":"86750","commission":"0","product":{"contract_type":"perpetual_futures","contract_unit_currency":"BTC","contract_value":"0.001","id":27,"notional_type":"vanilla","quoting_asset":{"minimum_precision":2,"precision":8,"symbol":"USD"},"settling_asset":{"minimum_precision":2,"precision":8,"symbol":"USD"},"spot_index":{"symbol":".DEXBTUSD"},"symbol":"BTCUSD","tick_size":"0.5","underlying_asset":{"minimum_precision":4,"precision":8,"symbol":"BTC"}},"side":"buy","stop_order_type":null,"average_fill_price":null,"client_order_id":null,"created_at":"2025-12-16T16:26:43.086819Z","product_id":27,"stop_price":null,"reduce_only":false,"bracket_stop_loss_limit_price":null,"updated_at":"2025-12-16T16:26:43.086819Z","trail_amount":null,"time_in_force":"gtc","unfilled_size":2,"quote_size":null,"meta_data":{"ip":"2401:4900:8f62:f0be:d9ab:4c76:8dc3:835","otc":false,"source":"mobile_app_ios"},"size":2,"paid_commission":"0","bracket_order":null,"stop_trigger_method":null,"bracket_stop_loss_price":null}],"success":true}
+[16 Dec 2025 22:07:09,307 INFO  Console -EditOrdersService.java]- orderList::::[{"bracket_take_profit_limit_price":null,"paid_commission":"0","created_at":"2025-12-16T16:26:43.086819Z","mmp":"disabled","bracket_stop_loss_price":null,"average_fill_price":null,"stop_price":null,"updated_at":"2025-12-16T16:26:43.086819Z","trail_amount":null,"bracket_take_profit_price":null,"quote_size":null,"product_id":27,"meta_data":{"ip":"2401:4900:8f62:f0be:d9ab:4c76:8dc3:835","source":"mobile_app_ios","otc":false},"commission":"0","state":"open","id":1086680911,"order_type":"limit_order","product":{"contract_type":"perpetual_futures","symbol":"BTCUSD","notional_type":"vanilla","contract_unit_currency":"BTC","settling_asset":{"symbol":"USD","minimum_precision":2,"precision":8},"contract_value":"0.001","id":27,"spot_index":{"symbol":".DEXBTUSD"},"tick_size":"0.5","quoting_asset":{"symbol":"USD","minimum_precision":2,"precision":8},"underlying_asset":{"symbol":"BTC","minimum_precision":4,"precision":8}},"side":"buy","client_order_id":null,"reduce_only":false,"stop_order_type":null,"cancellation_reason":null,"limit_price":"86750","stop_trigger_method":null,"time_in_force":"gtc","bracket_order":null,"bracket_stop_loss_limit_price":null,"size":2,"user_id":24111461,"unfilled_size":2,"product_symbol":"BTCUSD","bracket_trail_amount":null}]
+[16 Dec 2025 22:07:09,312 INFO  Console -EditOrdersService.java]- Found -2 orders with lot_size=1. Editing...
+[16 Dec 2025 22:07:10,582 INFO  Console -EditOrdersService.java]- Edit Response for 1086680911 ? org.springframework.web.reactive.function.client.DefaultClientResponse@1b46c458
+[16 Dec 2025 22:07:10,589 INFO  Console -EditOrdersService.java]- Response of setOrderLeverage:::: {"result":{"average_fill_price":null,"bracket_order":null,"bracket_stop_loss_limit_price":null,"bracket_stop_loss_price":null,"bracket_take_profit_limit_price":null,"bracket_take_profit_price":null,"bracket_trail_amount":null,"cancellation_reason":null,"client_order_id":null,"commission":"0","created_at":"2025-12-16T16:26:43.086819Z","id":1086680911,"limit_price":"87250","meta_data":{"ip":"2401:4900:8f62:f0be:d9ab:4c76:8dc3:835","otc":false,"source":"mobile_app_ios","user_updated_at":"2025-12-16T16:37:10.356Z"},"mmp":"disabled","order_type":"limit_order","paid_commission":"0","product_id":27,"product_symbol":"BTCUSD","quote_size":null,"reduce_only":false,"side":"buy","size":3,"state":"open","stop_order_type":null,"stop_price":null,"stop_trigger_method":null,"time_in_force":"gtc","trail_amount":null,"unfilled_size":3,"updated_at":"2025-12-16T16:37:10.357468Z","user_id":24111461},"success":true}
+[16 Dec 2025 22:07:13,104 INFO  Console -PositionService.java]- Response of PositionDetailsService:::::{"result":{"entry_price":"87625.00000000","size":-2},"success":true}
+[16 Dec 2025 22:07:13,105 INFO  Console -StartBot.java]- [BOT] Position data received for tick 1: {"result":{"entry_price":"87625.00000000","size":-2},"success":true}
+[16 Dec 2025 22:07:13,106 INFO  Console -StartBot.java]- LastOrderSize::::-2 and CurentOrderSize:::::[-2]
+[16 Dec 2025 22:07:13,106 INFO  Console -StartBot.java]- [BOT] Orders already placed. Going for next tick:::::::::::::::
+[16 Dec 2025 22:07:18,225 INFO  Console -PositionService.java]- Response of PositionDetailsService:::::{"result":{"entry_price":"87625.00000000","size":-2},"success":true}
+[16 Dec 2025 22:07:18,226 INFO  Console -StartBot.java]- [BOT] Position data received for tick 2: {"result":{"entry_price":"87625.00000000","size":-2},"success":true}
+[16 Dec 2025 22:07:18,227 INFO  Console -StartBot.java]- LastOrderSize::::-2 and CurentOrderSize:::::[-2]
+[16 Dec 2025 22:07:18,229 INFO  Console -StartBot.java]- [BOT] Orders already placed. Going for next tick:::::::::::::::
+[16 Dec 2025 22:07:23,178 INFO  Console -PositionService.java]- Response of PositionDetailsService:::::{"result":{"entry_price":"87625.00000000","size":-2},"success":true}
+[16 Dec 2025 22:07:23,179 INFO  Console -StartBot.java]- [BOT] Position data received for tick 3: {"result":{"entry_price":"87625.00000000","size":-2},"success":true}
+[16 Dec 2025 22:07:23,180 INFO  Console -StartBot.java]- LastOrderSize::::-2 and CurentOrderSize:::::[-2]
+[16 Dec 2025 22:07:23,180 INFO  Console -StartBot.java]- [BOT] Orders already placed. Going for next tick:::::::::::::::
+[16 Dec 2025 22:07:28,193 INFO  Console -PositionService.java]- Response of PositionDetailsService:::::{"result":{"entry_price":"87625.00000000","size":-2},"success":true}
+[16 Dec 2025 22:07:28,195 INFO  Console -StartBot.java]- [BOT] Position data received for tick 4: {"result":{"entry_price":"87625.00000000","size":-2},"success":true}
+[16 Dec 2025 22:07:28,196 INFO  Console -StartBot.java]- LastOrderSize::::-2 and CurentOrderSize:::::[-2]
+[16 Dec 2025 22:07:28,196 INFO  Console -StartBot.java]- [BOT] Orders already placed. Going for next tick:::::::::::::::
+[16 Dec 2025 22:07:33,169 INFO  Console -PositionService.java]- Response of PositionDetailsService:::::{"result":{"entry_price":"87625.00000000","size":-2},"success":true}
+[16 Dec 2025 22:07:33,170 INFO  Console -StartBot.java]- [BOT] Position data received for tick 5: {"result":{"entry_price":"87625.00000000","size":-2},"success":true}
+[16 Dec 2025 22:07:33,171 INFO  Console -StartBot.java]- LastOrderSize::::-2 and CurentOrderSize:::::[-2]
+[16 Dec 2025 22:07:33,171 INFO  Console -StartBot.java]- [BOT] Orders already placed. Going for next tick:::::::::::::::
+[16 Dec 2025 22:07:38,128 INFO  Console -PositionService.java]- Response of PositionDetailsService:::::{"result":{"entry_price":"87625.00000000","size":-2},"success":true}
+[16 Dec 2025 22:07:38,129 INFO  Console -StartBot.java]- [BOT] Position data received for tick 6: {"result":{"entry_price":"87625.00000000","size":-2},"success":true}
+[16 Dec 2025 22:07:38,130 INFO  Console -StartBot.java]- LastOrderSize::::-2 and CurentOrderSize:::::[-2]
+[16 Dec 2025 22:07:38,130 INFO  Console -StartBot.java]- [BOT] Orders already placed. Going for next tick:::::::::::::::
+[16 Dec 2025 22:07:43,148 INFO  Console -PositionService.java]- Response of PositionDetailsService:::::{"result":{"entry_price":"87625.00000000","size":-2},"success":true}
+[16 Dec 2025 22:07:43,149 INFO  Console -StartBot.java]- [BOT] Position data received for tick 7: {"result":{"entry_price":"87625.00000000","size":-2},"success":true}
+[16 Dec 2025 22:07:43,150 INFO  Console -StartBot.java]- LastOrderSize::::-2 and CurentOrderSize:::::[-2]
+[16 Dec 2025 22:07:43,150 INFO  Console -StartBot.java]- [BOT] Orders already placed. Going for next tick:::::::::::::::
+[16 Dec 2025 22:07:48,311 INFO  Console -PositionService.java]- Response of PositionDetailsService:::::{"result":{"entry_price":"87625.00000000","size":-2},"success":true}
+[16 Dec 2025 22:07:48,311 INFO  Console -StartBot.java]- [BOT] Position data received for tick 8: {"result":{"entry_price":"87625.00000000","size":-2},"success":true}
+[16 Dec 2025 22:07:48,312 INFO  Console -StartBot.java]- LastOrderSize::::-2 and CurentOrderSize:::::[-2]
+[16 Dec 2025 22:07:48,312 INFO  Console -StartBot.java]- [BOT] Orders already placed. Going for next tick:::::::::::::::
+[16 Dec 2025 22:07:53,178 INFO  Console -PositionService.java]- Response of PositionDetailsService:::::{"result":{"entry_price":"87625.00000000","size":-2},"success":true}
+[16 Dec 2025 22:07:53,181 INFO  Console -StartBot.java]- [BOT] Position data received for tick 9: {"result":{"entry_price":"87625.00000000","size":-2},"success":true}
+[16 Dec 2025 22:07:53,181 INFO  Console -StartBot.java]- LastOrderSize::::-2 and CurentOrderSize:::::[-2]
+[16 Dec 2025 22:07:53,182 INFO  Console -StartBot.java]- [BOT] Orders already placed. Going for next tick:::::::::::::::
+[16 Dec 2025 22:07:58,195 INFO  Console -PositionService.java]- Response of PositionDetailsService:::::{"result":{"entry_price":"87625.00000000","size":-2},"success":true}
+[16 Dec 2025 22:07:58,196 INFO  Console -StartBot.java]- [BOT] Position data received for tick 10: {"result":{"entry_price":"87625.00000000","size":-2},"success":true}
+[16 Dec 2025 22:07:58,196 INFO  Console -StartBot.java]- LastOrderSize::::-2 and CurentOrderSize:::::[-2]
+[16 Dec 2025 22:07:58,196 INFO  Console -StartBot.java]- [BOT] Orders already placed. Going for next tick:::::::::::::::
+[16 Dec 2025 22:08:03,216 INFO  Console -PositionService.java]- Response of PositionDetailsService:::::{"result":{"entry_price":"87625.00000000","size":-2},"success":true}
+[16 Dec 2025 22:08:03,216 INFO  Console -StartBot.java]- [BOT] Position data received for tick 11: {"result":{"entry_price":"87625.00000000","size":-2},"success":true}
+[16 Dec 2025 22:08:03,217 INFO  Console -StartBot.java]- LastOrderSize::::-2 and CurentOrderSize:::::[-2]
+[16 Dec 2025 22:08:03,218 INFO  Console -StartBot.java]- [BOT] Orders already placed. Going for next tick:::::::::::::::
+[16 Dec 2025 22:08:08,128 INFO  Console -PositionService.java]- Response of PositionDetailsService:::::{"result":{"entry_price":"87625.00000000","size":-2},"success":true}
+[16 Dec 2025 22:08:08,128 INFO  Console -StartBot.java]- [BOT] Position data received for tick 12: {"result":{"entry_price":"87625.00000000","size":-2},"success":true}
+[16 Dec 2025 22:08:08,129 INFO  Console -StartBot.java]- LastOrderSize::::-2 and CurentOrderSize:::::[-2]
+[16 Dec 2025 22:08:08,130 INFO  Console -StartBot.java]- [BOT] Orders already placed. Going for next tick:::::::::::::::

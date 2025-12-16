@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.deltaexchange.trade.config.DeltaConfig;
+import com.deltaexchange.trade.service.SetLeverageService.ApiException;
 import com.deltaexchange.trade.util.DeltaSignatureUtil;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -55,9 +56,9 @@ public class EditOrdersService {
                     if (Math.abs(size) >= 432) {
                         String margin = "";
                         if (Math.abs(size) == 432 || Math.abs(size) == 1296) {
-                            margin = "200";
+                            margin = "100";
                         } else if (Math.abs(size) == 2592) {
-                            margin = "400";
+                            margin = "200";
                         }
                         addMargin.addMargin(margin).subscribe(addMarginNode -> {
                             consoleLogger.info("addMarginNode:::::{}", addMarginNode);
@@ -166,7 +167,7 @@ public class EditOrdersService {
             body.put("id", orderId);
             body.put("product_id", config.getProductId());
             body.put("limit_price", newPrice);
-            body.put("size", positionSize + 1);
+            body.put("size", Math.abs(positionSize) + 1);
 
             String endpoint = "/v2/orders";
 
@@ -183,15 +184,32 @@ public class EditOrdersService {
                     .header("timestamp", String.valueOf(ts))
                     .header("Content-Type", "application/json")
                     .bodyValue(body.toString())
-                    .retrieve()
-                    .bodyToMono(String.class)
-                    .map(res -> {
-                        consoleLogger.info("Edit Response for {} → {}", orderId, res);
-                        try {
-                            JsonNode json = mapper.readTree(res);
-                            return json;
-                        } catch (Exception e) {
-                            throw new RuntimeException("Failed to parse cancel orders response", e);
+                    .exchangeToMono(response -> {
+                        consoleLogger.info("Edit Response for {} → {}", orderId, response);
+                       if (response.statusCode().is2xxSuccessful()) {
+                            // success -> read body and convert to JsonNode
+                            return response.bodyToMono(String.class)
+                                    .map(responsebody -> {
+                                        consoleLogger.info("Response of setOrderLeverage:::: {}", responsebody);
+                                        try {
+                                            return mapper.readTree(responsebody);
+                                        } catch (Exception e) {
+                                            throw new RuntimeException("Failed to parse setOrderLeverage response", e);
+                                        }
+                                    });
+                        } else {
+                            // error -> read full error body and throw a custom exception containing it
+                            return response.bodyToMono(String.class)
+                                    .defaultIfEmpty("") // defensive: server might return empty body
+                                    .flatMap(errorBody -> {
+                                        int statusCode = response.rawStatusCode();
+                                        consoleLogger.error("PlaceOrder API failed. status={} body={}", statusCode,
+                                                errorBody);
+                                        errorLogger.error("Place Order API failed. status={} body={}", statusCode,
+                                                errorBody);
+                                        // Throw exception with exact status + body
+                                        return Mono.error(new ApiException(statusCode, errorBody));
+                                    });
                         }
                     });
 
